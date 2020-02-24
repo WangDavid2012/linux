@@ -159,6 +159,21 @@ if (__res >= 0) \
 errno = -__res; \
 return -1; \
 }
+/**********************************************
+将 _syscall1(int,close,int,fd)宏展开，得到
+int close(int fd) 
+{ 
+    long __res;      
+    __asm__ volatile ("int $0x80" 
+        : "=a" (__res) 
+        : "0" (__NR_close),"b" ((long)(fd)));      
+    if (__res >= 0)
+        return (int) __res; 
+    errno = -__res; 
+    return -1; 
+}
+__NR_close 表示系统调用的编号
+************************************************/
 
 #define _syscall2(type,name,atype,a,btype,b) \
 type name(atype a,btype b) \
